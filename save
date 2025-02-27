@@ -1,0 +1,60 @@
+
+https://blog.logrocket.com/http-requests-axios/
+
+axios
+  .post("https://jsonplaceholder.typicode.com/users", {
+    id: 11,
+    name: "Tom Brady",
+    username: "Brad",
+    email: "tombrad@asd.com",
+  })
+  .then((response) => displayOutput(response))
+  .catch((err) => console.log(err));
+
+ 
+  axios
+  .post("https://jsonplaceholder.typicode.com/users", {
+    id: 11,
+    name: "Tom Brady",
+    username: "Brad",
+    email: "tombrad@asd.com",
+  })
+  .then((response) => displayOutput(response))
+  .catch((err) => console.log(err));
+
+
+
+
+  axios({
+    method: 'post',
+    url: '/login',
+    data: {
+      firstName: 'Finn',
+      lastName: 'Williams'
+    }
+  });
+
+
+  Promise.all([
+    axios.get("https://api.github.com/users/mapbox"),
+    axios.get("https://api.github.com/users/phantomjs"),
+  ]).then(([user1, user2]) => {
+    //this will be executed only when all requests are complete
+    console.log("Date created: ", user1.data.created_at);
+    console.log("Date created: ", user2.data.created_at);
+  });
+  
+
+
+
+
+  axios.get('/api/users', {timeout: 5000})
+  .then(response => {
+    // handle success
+  })
+  .catch(error => {
+    // handle error
+  });
+
+
+  axios.defaults.timeout = 5000;
