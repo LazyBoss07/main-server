@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Comparison Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px; }
+        .section-title { 
+            background-color: #007bff; color: white; padding: 10px; 
+            font-size: 1.2rem; border-radius: 5px; margin-bottom: 10px;
+        }
+        .accordion-button { background-color: #e3f2fd; color: #333; font-weight: bold; }
+        .accordion-button:hover { background-color: #bbdefb; }
+        .accordion-body { background-color: white; padding: 10px; }
+        .file-name { font-size: 0.9rem; color: #6c757d; font-weight: bold; }
+        .highlight-diff { background-color: #ffdddd !important; border-left: 4px solid red; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const accordions = document.querySelectorAll(".accordion-body");
+            const groupedData = {};
+
+            accordions.forEach(body => {
+                const key = body.dataset.key;
+                if (!groupedData[key]) groupedData[key] = [];
+                groupedData[key].push(body.innerText.trim());
+            });
+
+            Object.values(groupedData).forEach(group => {
+                const uniqueValues = new Set(group);
+                if (uniqueValues.size > 1) {
+                    group.forEach((value, index) => {
+                        accordions[index].classList.add("highlight-diff");
+                    });
+                }
+            });
+        });
+    </script>
+ 
+
+</head>
+<body>
+
+    <!-- <div class="container">
+        <h1 class="text-center mb-4">Data Comparison Dashboard</h1>
+
+        <div class="accordion" id="accordionAll">
+            <% 
+                let allSections = new Set();
+                extractedResults.forEach(result => {
+                    Object.keys(result.extractedData).forEach(section => allSections.add(section));
+                });
+
+                allSections = Array.from(allSections);
+
+                allSections.forEach((section, index) => { 
+            %>
+               
+                <div class="section-title">
+                    <%= section %>
+                </div>
+
+                <div class="accordion" id="accordion-<%= index %>">
+                    <% extractedResults.forEach(result => { %>
+                        <% if (result.extractedData[section] !== undefined) { %>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading-<%= index %>-<%= result.file %>">
+                                    <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#collapse-<%= index %>-<%= result.file %>"
+                                            aria-expanded="false"
+                                            aria-controls="collapse-<%= index %>-<%= result.file %>">
+                                        <span class="file-name"><%= result.file %></span>
+                                    </button>
+                                </h2>
+                                <div id="collapse-<%= index %>-<%= result.file %>" class="accordion-collapse collapse"
+                                     aria-labelledby="heading-<%= index %>-<%= result.file %>"
+                                     data-bs-parent="#accordion-<%= index %>">
+                                    <div class="accordion-body" data-key="<%= section %>">
+                                        <% if (typeof result.extractedData[section] === 'object') { %>
+                                            <pre><%= JSON.stringify(result.extractedData[section], null, 2) %></pre>
+                                        <% } else { %>
+                                            <%= result.extractedData[section] %>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    <% }) %>
+                </div>
+            <% }) %>
+        </div>
+
+    </div> -->
+    <div class="container mt-4">
+        <h2 class="text-center">Dashboard</h2>
+    
+        <% if (extractedResults.length > 0) { %>
+            <% let referenceData = extractedResults[0].extractedData; %> <!-- First file as reference -->
+    
+            <div class="accordion" id="mainAccordion">
+                <% for (const key in referenceData) { %>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading-<%= key %>">
+                            <button class="accordion-button collapsed bg-primary text-white" type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapse-<%= key %>"
+                                    aria-expanded="false"
+                                    aria-controls="collapse-<%= key %>">
+                                <strong><%= key %></strong>
+                            </button>
+                        </h2>
+                        <div id="collapse-<%= key %>" class="accordion-collapse collapse"
+                             aria-labelledby="heading-<%= key %>" data-bs-parent="#mainAccordion">
+                            <div class="accordion-body">
+                                <% extractedResults.forEach((result, index) => { %>
+                                    <% if (index === 0) return; %> <!-- Skip first file since it's the reference -->
+                                    <div class="mb-3 p-2 border rounded">
+                                        <h6 class="text-secondary">File: <%= result.file %></h6>
+    
+                                        <% let value = result.extractedData[key] || ""; %>
+                                        <% let referenceValue = referenceData[key] || ""; %>
+    
+                                        <% if (value !== referenceValue) { %>
+                                            <p>
+                                                <%= highlightDifferences(referenceValue, value) %>
+                                            </p>
+                                        <% } %>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        <% } else { %>
+            <p class="text-center text-muted">No extracted data available.</p>
+        <% } %>
+    </div>
+    
+    
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

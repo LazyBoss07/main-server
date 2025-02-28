@@ -1,0 +1,120 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Dashboard - Files for ID <%= filterId %></h1>
+
+    <nav>
+        <a href="/dashboard/1">View Files for ID 1</a> |
+        <a href="/dashboard/2">View Files for ID 2</a>
+    </nav>
+
+    <% extractedResults.forEach(result => { %>
+        <div class="file-container">
+            <h2>File: <%= result.file %></h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Extracted Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (const [key, value] of Object.entries(result.extractedData)) { %>
+                        <tr>
+                            <td><strong><%= key %></strong></td>
+                            <td>
+                                <% if (typeof value === 'object') { %>
+                                    <pre><%= JSON.stringify(value, null, 2) %></pre>
+                                <% } else { %>
+                                    <%= value %>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    <% }); %>
+
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center">Dashboard - Files for ID <%= filterId %></h1>
+
+        <!-- Navigation Links -->
+        <div class="mb-3">
+            <a href="/dashboard/1" class="btn btn-primary">View Files for ID 1</a>
+            <a href="/dashboard/2" class="btn btn-secondary">View Files for ID 2</a>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <ul class="nav nav-tabs" id="fileTabs" role="tablist">
+            <% extractedResults.forEach((result, index) => { %>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link <%= index === 0 ? 'active' : '' %>" id="tab-<%= index %>"
+                        data-bs-toggle="tab" data-bs-target="#file-<%= index %>"
+                        type="button" role="tab" aria-controls="file-<%= index %>"
+                        aria-selected="<%= index === 0 ? 'true' : 'false' %>">
+                        <%= result.file %>
+                    </button>
+                </li>
+            <% }); %>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content mt-3" id="fileTabsContent">
+            <% extractedResults.forEach((result, index) => { %>
+                <div class="tab-pane fade <%= index === 0 ? 'show active' : '' %>" id="file-<%= index %>" role="tabpanel">
+                    <h3 class="mt-3">File: <%= result.file %></h3>
+
+                    <!-- Accordion -->
+                    <div class="accordion" id="accordion-<%= index %>">
+                        <% for (const [key, value] of Object.entries(result.extractedData)) { %>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading-<%= index %>-<%= key %>">
+                                    <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#collapse-<%= index %>-<%= key %>"
+                                            aria-expanded="false"
+                                            aria-controls="collapse-<%= index %>-<%= key %>">
+                                        <strong><%= key %></strong>
+                                    </button>
+                                </h2>
+                                <div id="collapse-<%= index %>-<%= key %>" class="accordion-collapse collapse"
+                                     aria-labelledby="heading-<%= index %>-<%= key %>"
+                                     data-bs-parent="#accordion-<%= index %>">
+                                    <div class="accordion-body">
+                                        <% if (typeof value === 'object') { %>
+                                            <pre><%= JSON.stringify(value, null, 2) %></pre>
+                                        <% } else { %>
+                                            <%= value %>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+
+                </div>
+            <% }); %>
+        </div>
+
+    </div>
+</body>
+</html>
